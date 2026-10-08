@@ -1,0 +1,17 @@
+# Runs the built app behind an optional token gate.
+#
+# Values come from the local .env (never baked into the image). Copy
+# .env.example to .env, set at least APP_TOKEN or HERMES_KEY, then:
+#
+#   docker compose up --build -d
+#
+# The app listens on port 3000 inside the container. No volume is needed:
+# the app holds no state of its own.
+services:
+  app:
+    build: .
+    image: openmanatee:local
+    env_file: .env
+    ports:
+      - "3000:3000"
+    restart: unless-stopped

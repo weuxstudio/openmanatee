@@ -1,0 +1,10 @@
+# Keep the build context small and free of secrets.
+node_modules
+build
+.svelte-kit
+.env
+.env.*
+.hermes
+*.py
+.git
+.DS_Store

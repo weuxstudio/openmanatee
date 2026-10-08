@@ -1,0 +1,5 @@
+# pnpm 11 only runs the install scripts of packages listed here. esbuild (used
+# by vite) needs its own install step; without this entry `pnpm install` ends
+# with ERR_PNPM_IGNORED_BUILDS and a non-zero exit code.
+allowBuilds:
+  esbuild: true

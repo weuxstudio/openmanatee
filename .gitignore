@@ -1,0 +1,12 @@
+node_modules
+.svelte-kit
+build
+.env
+.env.*
+!.env.example
+# Local Hermes state (skills, profiles); never part of the app.
+.hermes
+__pycache__
+# A local pnpm store can appear when pnpm runs in CI mode.
+.pnpm-store
+.DS_Store
