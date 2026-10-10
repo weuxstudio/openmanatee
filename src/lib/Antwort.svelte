@@ -17,7 +17,7 @@
 <div class="antwort">
 	{#each teile as b, i (i)}
 		{#if b.art === 'titel'}
-			<h3 class="ueberschrift">{@html inline(b.text)}</h3>
+			<h2 class="ueberschrift">{@html inline(b.text)}</h2>
 		{:else if b.art === 'absatz'}
 			<p class="text" class:geklappt={b.text.length > LANG && !offen[i]}>
 				{@html inline(b.text)}

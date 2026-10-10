@@ -23,7 +23,7 @@
 
 <section class="baustein">
 	{#if 'titel' in b && b.titel}
-		<h4 class="kopf">{@html inline(b.titel)}</h4>
+		<h3 class="kopf">{@html inline(b.titel)}</h3>
 	{/if}
 
 	{#if b.art === 'liste'}
