@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512" role="img" aria-label="OpenManatee">
+	<title>OpenManatee</title>
+	<defs>
+		<radialGradient id="leib" gradientUnits="userSpaceOnUse" cx="150" cy="110" r="420">
+			<stop offset="0%" stop-color="#FFE79A" />
+			<stop offset="52%" stop-color="#F5C542" />
+			<stop offset="100%" stop-color="#D9A21F" />
+		</radialGradient>
+		<radialGradient id="schatten" gradientUnits="userSpaceOnUse" cx="256" cy="430" r="186">
+			<stop offset="0%" stop-color="rgba(20,20,25,0.28)" />
+			<stop offset="100%" stop-color="rgba(20,20,25,0)" />
+		</radialGradient>
+		<radialGradient id="glanz" gradientUnits="userSpaceOnUse" cx="172" cy="144" r="120">
+			<stop offset="0%" stop-color="rgba(255,255,255,0.9)" />
+			<stop offset="100%" stop-color="rgba(255,255,255,0)" />
+		</radialGradient>
+	</defs>
+
+	<g transform="translate(0 -12)">
+		<ellipse cx="256" cy="430" rx="176" ry="26" fill="url(#schatten)" />
+
+		<g fill="url(#leib)">
+			<!-- zwei Flossen, seitlich abgewinkelt -->
+			<ellipse cx="112" cy="330" rx="56" ry="25" transform="rotate(32 112 330)" />
+			<ellipse cx="400" cy="330" rx="56" ry="25" transform="rotate(-32 400 330)" />
+			<!-- Leib: die Kugelform, die die Rolle in der App schon hat -->
+			<ellipse cx="256" cy="248" rx="166" ry="158" />
+		</g>
+
+		<!-- Schnauze, heller als der Leib -->
+		<ellipse cx="256" cy="312" rx="92" ry="60" fill="#FFEFB8" />
+		<!-- Nasenloecher auf der Oberseite der Schnauze -->
+		<circle cx="232" cy="290" r="9" fill="#C9941C" />
+		<circle cx="280" cy="290" r="9" fill="#C9941C" />
+
+		<ellipse cx="186" cy="150" rx="80" ry="42" fill="url(#glanz)" transform="rotate(-18 186 150)" />
+
+		<!-- Visier, wie bei den anderen Figuren -->
+		<ellipse cx="256" cy="210" rx="92" ry="54" fill="#101014" opacity="0.92" />
+		<g fill="none" stroke="#FFF8E6" stroke-width="14" stroke-linecap="round">
+			<path d="M209.5 219 q18 -25.5 36 0" />
+			<path d="M266.5 219 q18 -25.5 36 0" />
+		</g>
+	</g>
+</svg>

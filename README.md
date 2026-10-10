@@ -1,5 +1,7 @@
 # OpenManatee
 
+<p align="center"><img src="static/manatee.svg" alt="OpenManatee, a manatee wearing a visor" width="170"></p>
+
 A small self-hosted client for a Hermes harness. It chats with an agent that does not only send text
 back: it can also shape the interface its answer appears in.
 
