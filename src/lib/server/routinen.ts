@@ -14,6 +14,8 @@ export type Routine = {
 	zustand: 'laeuft' | 'ruht';
 	/** Naechster Lauf, leer wenn pausiert. */
 	naechster: string;
+	/** Naechster Lauf in ISO-Form, zum Sortieren; leer wenn pausiert. */
+	naechsterIso: string;
 	/** Letzter Lauf mit Ergebnis, leer wenn noch keiner lief. */
 	letzter: string;
 	/** Skript oder Agent. */
@@ -95,6 +97,7 @@ export function alsRoutine(roh: Record<string, unknown>): Routine {
 		zeitplan: zeitplanText(String(roh.schedule_display ?? '')),
 		zustand: aktiv ? 'laeuft' : 'ruht',
 		naechster: aktiv ? zeitZuText(roh.next_run_at) : '',
+		naechsterIso: aktiv && typeof roh.next_run_at === 'string' ? roh.next_run_at : '',
 		letzter,
 		art: roh.no_agent === true ? 'Skript' : 'Agent'
 	};

@@ -65,6 +65,7 @@ describe('Routinen: aus der Auftragsliste', () => {
 			zeitplan: 'freitags 10:00',
 			zustand: 'laeuft',
 			naechster: '16.10. 10:00',
+			naechsterIso: '2026-10-16T10:00:00+02:00',
 			letzter: '09.10. 10:01 ok',
 			art: 'Agent'
 		});

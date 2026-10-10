@@ -190,9 +190,7 @@ class Sitzung {
 			this.hinweis = 'Anmeldung nötig.';
 		}
 		if (this.echt) {
-			this.nachrichten = [
-				{ art: 'agent', text: 'Verbunden. Frag mich, was du brauchst.' }
-			];
+			this.nachrichten = [{ art: 'agent', text: 'Verbunden mit dem Harness.' }];
 			try {
 				this.kennung = localStorage.getItem('openmanatee.kennung');
 			} catch {
@@ -204,7 +202,7 @@ class Sitzung {
 			this.nachrichten = [
 				{
 					art: 'agent',
-					text: 'Ich habe Kalender, Postfach und deine laufenden Vorhaben gelesen. Hier ist mein Vorschlag für heute.'
+					text: 'Beispielantwort: Ich habe Kalender, Postfach und deine laufenden Vorhaben gelesen. Hier ist mein Vorschlag für heute.'
 				}
 			];
 		}

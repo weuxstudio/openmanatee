@@ -3,13 +3,60 @@
 	import { page } from '$app/state';
 	import Figur from '$lib/Figur.svelte';
 	import Freigabe from '$lib/Freigabe.svelte';
+	import Hinweis from '$lib/Hinweis.svelte';
 	import Icon from '$lib/Icon.svelte';
 	import { sitzung } from '$lib/sitzung.svelte';
-	import { AKTIONEN } from '$lib/werte';
+	import { START_LEER, kurzSatz, startLaden, type StartStand } from '$lib/start';
 
 	let frage = $state('');
 	/** Visible brand, set by the operator through PUBLIC_APP_NAME. */
 	const marke = $derived((page.data.appName as string) ?? '');
+
+	let stand = $state<StartStand>(START_LEER);
+	let geladen = $state(false);
+
+	async function standHolen(): Promise<void> {
+		stand = await startLaden();
+		geladen = true;
+	}
+
+	// Erst laden, wenn feststeht, dass keine Anmeldung fehlt: sonst antwortet die
+	// Route mit 401 und die Seite zeigt einen Fehler statt der Zahlen.
+	$effect(() => {
+		if (sitzung.geprueft && !sitzung.anmeldungNoetig && !geladen) void standHolen();
+	});
+
+	/** Die vier Kacheln tragen, was wirklich da ist, und fuehren zur Seite dahinter. */
+	const kacheln = $derived([
+		{
+			icon: 'haken',
+			titel: 'Aufgaben',
+			text: `${stand.aufgaben.gesamt} Karten, ${stand.aufgaben.offen} offen`,
+			weg: '/aufgaben'
+		},
+		{
+			icon: 'blitz',
+			titel: 'Routinen',
+			text: `${stand.routinen.gesamt}, davon ${stand.routinen.aktiv} aktiv`,
+			weg: '/aufgaben'
+		},
+		{
+			icon: 'ordner',
+			titel: 'Ergebnisse',
+			text: stand.ergebnisse.anzahl
+				? `${stand.ergebnisse.anzahl} Dateien im Ordner`
+				: 'noch nichts abgelegt',
+			weg: '/ablage'
+		},
+		{
+			icon: 'kalender',
+			titel: 'Nächster Lauf',
+			text: stand.routinen.naechste[0]
+				? `${stand.routinen.naechste[0].wann} ${stand.routinen.naechste[0].name}`
+				: 'keiner geplant',
+			weg: '/aufgaben'
+		}
+	]);
 
 	function loss(rolle = 'manatee'): void {
 		goto(`/session/${rolle.toLowerCase()}`);
@@ -41,12 +88,27 @@
 </header>
 
 <h1 class="gruss">
-	<span class="g1">Guten Morgen,</span>
-	<span class="g2">Lass uns was<br />bewegen.</span>
+	<span class="g1">{stand.gruss},</span>
+	<span class="g2">{kurzSatz(stand)}</span>
 </h1>
 
+{#if stand.beispiel}
+	<Hinweis
+		text="Beispieldaten. Diese Zahlen kommen nicht von deinem Rechner."
+		klein={stand.fehler ?? ''}
+	/>
+{:else if stand.fehler}
+	<Hinweis text="Nicht alles lesbar." klein={stand.fehler} />
+{/if}
+
 <div class="blase" style="margin-top:14px">
-	<span>Hey! Was packen wir heute an?</span>
+	<span>
+		{#if stand.ergebnisse.neuestes}
+			Neuester Bericht: {stand.ergebnisse.neuestes.name}
+		{:else}
+			Noch nichts im Ordner abgelegt.
+		{/if}
+	</span>
 	<Icon name="welle" groesse={18} />
 </div>
 
@@ -71,18 +133,24 @@
 	</button>
 {:else}
 	<button class="laufzeile" onclick={laufOderOeffnen}>
-		<span class="zustand ruht"><i></i>{sitzung.echt ? 'Verbunden' : 'Bereit'}</span>
-		<span class="neben">{sitzung.echt ? 'Frag mich' : 'Tag planen lassen'}</span>
+		<span class="zustand" class:ruht={!sitzung.echt}><i></i>{sitzung.echt ? 'Verbunden' : 'Ohne Harness'}</span>
+		<span class="neben">
+			{#if stand.routinen.naechste[0]}
+				nächster Lauf {stand.routinen.naechste[0].wann}
+			{:else}
+				keine Routine geplant
+			{/if}
+		</span>
 		<Icon name="chevron" groesse={16} />
 	</button>
 {/if}
 
 <div class="raster">
-	{#each AKTIONEN as a (a.titel)}
-		<button class="karte" onclick={() => loss(a.rolle)}>
-			<div style="margin-bottom:9px"><Icon name={a.icon} groesse={22} /></div>
-			<div class="karte-titel">{a.titel}</div>
-			<div class="karte-text">{a.text}</div>
+	{#each kacheln as k (k.titel)}
+		<button class="karte" onclick={() => goto(k.weg)}>
+			<div style="margin-bottom:9px"><Icon name={k.icon} groesse={22} /></div>
+			<div class="karte-titel">{k.titel}</div>
+			<div class="karte-text">{k.text}</div>
 		</button>
 	{/each}
 </div>
@@ -100,8 +168,6 @@
 	</div>
 	{#if sitzung.anmeldungNoetig}
 		<p class="hinweis"><a href="/anmelden">Anmeldung nötig.</a></p>
-	{:else if !sitzung.echt}
-		<p class="hinweis">Musterdaten, kein Schlüssel gesetzt.</p>
 	{/if}
 </div>
 

@@ -25,8 +25,8 @@ export const AGENTEN: Record<string, Rolle> = {
 		basis: '#F5C542',
 		hell: '#FFE79A',
 		dunkel: '#D9A21F',
-		zustand: 'immer da',
-		text: 'Dein persönlicher Agent. Plant, entwirft, recherchiert und liefert.',
+		zustand: 'bereit',
+		text: 'Standardprofil des Harness mit allen Werkzeugen.',
 		sitzung: 'heute'
 	},
 	Recherche: {
@@ -36,7 +36,7 @@ export const AGENTEN: Record<string, Rolle> = {
 		hell: '#C4A8FF',
 		dunkel: '#6D3FD4',
 		zustand: 'ruht',
-		text: 'Findet und versteht, worauf es ankommt.',
+		text: 'Sucht Belege und vergleicht Quellen.',
 		sitzung: null
 	},
 	Entwurf: {
@@ -46,7 +46,7 @@ export const AGENTEN: Record<string, Rolle> = {
 		hell: '#9DC4FF',
 		dunkel: '#1F5FD0',
 		zustand: 'ruht',
-		text: 'Macht aus Ideen Text, Bild und Prototyp.',
+		text: 'Schreibt Ergebnisse zu einer lesbaren Fassung.',
 		sitzung: null
 	},
 	Ordnung: {
@@ -56,7 +56,7 @@ export const AGENTEN: Record<string, Rolle> = {
 		hell: '#B7F2D8',
 		dunkel: '#12A06C',
 		zustand: 'plant',
-		text: 'Hält Aufgaben, Kalender und Notizen zusammen.',
+		text: 'Prüft Ergebnisse auf Widersprüche und Belege.',
 		sitzung: null
 	},
 	Ablauf: {
@@ -66,7 +66,7 @@ export const AGENTEN: Record<string, Rolle> = {
 		hell: '#FFC0BE',
 		dunkel: '#D33B3B',
 		zustand: 'ruht',
-		text: 'Automatisiert Wege über deine Werkzeuge.',
+		text: 'Führt Routinen im Hintergrund aus.',
 		sitzung: null
 	},
 	Sonstige: {
@@ -88,13 +88,6 @@ export function rollenSchluessel(rolle: string): string {
 	const treffer = Object.keys(AGENTEN).find((k) => k.toLowerCase() === rolle.trim().toLowerCase());
 	return treffer ?? 'Sonstige';
 }
-
-export const AKTIONEN: { icon: string; titel: string; text: string; rolle: string }[] = [
-	{ icon: 'kalender', titel: 'Planen', text: 'Sortiere deinen Tag', rolle: 'Ordnung' },
-	{ icon: 'dokument', titel: 'Entwerfen', text: 'Ideen werden zu Ergebnissen', rolle: 'Entwurf' },
-	{ icon: 'lupe', titel: 'Recherchieren', text: 'Finde, was zählt', rolle: 'Recherche' },
-	{ icon: 'blitz', titel: 'Automatisieren', text: 'Läuft ohne dich', rolle: 'Ablauf' }
-];
 
 export const LEISTE: { weg: string; icon: string; label: string }[] = [
 	{ weg: '/', icon: 'haus', label: 'Start' },

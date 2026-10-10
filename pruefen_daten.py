@@ -10,6 +10,7 @@ in first, which is needed whenever the copy under test has a door.
 """
 import os
 import re
+from datetime import datetime
 from pathlib import Path
 
 from playwright.sync_api import sync_playwright
@@ -40,7 +41,8 @@ with sync_playwright() as p:
             pg.press('input[name="token"]', "Enter")
             pg.wait_for_timeout(1500)
 
-    for weg, bild in (("/aufgaben", "app-aufgaben-daten.png"), ("/ablage", "app-ablage-daten.png"),
+    for weg, bild in (("/", "app-start-daten.png"), ("/aufgaben", "app-aufgaben-daten.png"),
+                      ("/ablage", "app-ablage-daten.png"),
                       ("/session/manatee", "app-sitzung-vorschlaege.png")):
         pg.goto(BASIS + weg, wait_until="networkidle")
         pg.wait_for_timeout(2200)
@@ -48,6 +50,7 @@ with sync_playwright() as p:
         pg.screenshot(path=str(ORDNER / bild))
     b.close()
 
+start = seiten["/"]
 aufgaben = seiten["/aufgaben"]
 ablage = seiten["/ablage"]
 sitzung = seiten["/session/manatee"]
@@ -57,7 +60,33 @@ zahl = re.search(r"(\d+) Routinen", aufgaben)
 zeitplaene = ("taeglich", "jeden Tag", "montags", "dienstags", "mittwochs", "donnerstags",
               "freitags", "samstags", "sonntags", "alle ", "jede Minute")
 
+# Werbetexte, die frueher auf der Startseite standen und dort nichts zu suchen haben.
+werbetexte = [
+    "Sortiere deinen Tag", "Ideen werden zu Ergebnissen", "Finde, was zählt", "Läuft ohne dich",
+    "Lass uns was bewegen", "Was packen wir heute an", "immer auf deiner Seite", "immer da",
+    "Dein persönlicher Agent", "Deine Riege", "Dein Team für jedes Ziel", "Verbunden. Frag mich",
+    "Frag mich, was du brauchst",
+]
+
+
+def grussZurStunde(stunde: int) -> str:
+    """Dieselbe Regel wie in src/lib/zeit.ts, hier unabhaengig nachgerechnet."""
+    if 5 <= stunde < 11:
+        return "Guten Morgen"
+    if 11 <= stunde < 18:
+        return "Guten Tag"
+    if 18 <= stunde < 23:
+        return "Guten Abend"
+    return "Gute Nacht"
+
+
 pruefungen = {
+    "Startseite ohne Werbetexte": not [t for t in werbetexte if t in start],
+    "Startseite mit Gruss zur Uhrzeit": grussZurStunde(datetime.now().hour) in start,
+    "Startseite mit echten Zahlen": ("Karten," in start and "davon" in start),
+    "Startseite nennt den neuesten Bericht oder sagt, dass nichts da ist": (
+        "Neuester Bericht" in start or "Noch nichts im Ordner" in start
+    ),
     "Routinen-Abschnitt vorhanden": "Routinen" in aufgaben,
     "Routinen mit Anzahl": zahl is not None,
     "Routinen mit Zeitplan in Worten": any(t in aufgaben for t in zeitplaene),

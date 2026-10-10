@@ -9,6 +9,7 @@
 	import Werkzeugliste from '$lib/Werkzeugliste.svelte';
 	import { sitzung } from '$lib/sitzung.svelte';
 	import { boardLaden } from '$lib/board';
+	import { expertenLaden } from '$lib/experten';
 	import { AGENTEN } from '$lib/werte';
 
 	/** The key of the main role; its visible label is PUBLIC_APP_NAME. */
@@ -32,6 +33,8 @@
 	];
 	let vorschlaege = $state(NEUTRAL);
 	let vorschlaegeGeladen = $state(false);
+	/** Was das Profil dieser Rolle wirklich sagt; leer, wenn es keins gibt. */
+	let beschreibung = $state('');
 
 	function kuerzen(t: string, laenge = 24): string {
 		const kurz = t.trim();
@@ -39,7 +42,9 @@
 	}
 
 	async function vorschlaegeHolen(): Promise<void> {
-		const b = await boardLaden();
+		const [b, e] = await Promise.all([boardLaden(), expertenLaden()]);
+		const profil = e.experten.find((x) => x.name.toLowerCase() === kennung.toLowerCase());
+		beschreibung = profil?.beschreibung ?? '';
 		const offen = b.aufgaben.filter((a) => a.zustand !== 'done' && a.zustand !== 'archived');
 		if (offen.length)
 			vorschlaege = offen.slice(0, 2).map((a) => ({
@@ -93,7 +98,7 @@
 	</button>
 	<h1 class="mitte">
 		<span class="name"><i></i>{istHaupt ? marke : daten.name}</span>
-		<span class="sub">{daten.zustand === 'immer da' ? 'immer auf deiner Seite' : daten.zustand}</span>
+		<span class="sub">{beschreibung || daten.text}</span>
 	</h1>
 	<button class="rund" aria-label="Mehr"><Icon name="mehr" groesse={19} /></button>
 </header>

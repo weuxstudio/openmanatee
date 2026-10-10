@@ -49,7 +49,13 @@
 	<h1 class="titel">Agenten</h1>
 	<button class="rund" aria-label="Agent anlegen"><Icon name="plus" groesse={19} /></button>
 </header>
-<div class="unter">{sitzung.echt ? 'Deine Riege, bereit für Aufträge.' : 'Dein Team für jedes Ziel.'}</div>
+<div class="unter">
+	{sitzung.echt
+		? experten.length
+			? `${experten.length} Experten neben ${marke}.`
+			: `Nur ${marke}, noch kein Experte angelegt.`
+		: 'Ohne Harness: Beispiele.'}
+</div>
 
 {#if beispiel || !sitzung.echt}
 	<Hinweis
@@ -63,7 +69,7 @@
 <button class="karte feature" onclick={() => oeffnen('manatee')}>
 	<Figur rolle="manatee" groesse={72} />
 	<div style="flex:1;text-align:left">
-		<div class="name"><i></i>{marke} · {HAUPT.zustand}</div>
+		<div class="name"><i></i>{marke} · {sitzung.echt ? 'verbunden' : 'ohne Harness'}</div>
 		<div class="karte-text" style="margin-top:3px">{HAUPT.text}</div>
 	</div>
 	<Icon name="chevron" groesse={18} />
