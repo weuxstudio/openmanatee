@@ -50,9 +50,10 @@
 		{#each dateien as d (d.name)}
 			<div class="zeile-liste">
 				<Icon name={d.ordner ? 'ordner' : 'datei'} groesse={18} />
-				<span class="text mono name">{d.name}</span>
-				<span class="neben">{d.ordner ? 'Ordner' : d.groesse}</span>
-				<span class="neben">{d.geaendert}</span>
+				<span class="spalte">
+					<span class="text mono name">{d.name}</span>
+					<span class="leise">{d.ordner ? 'Ordner' : d.groesse} · {d.geaendert}</span>
+				</span>
 			</div>
 		{/each}
 	</div>

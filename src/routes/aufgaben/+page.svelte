@@ -119,7 +119,7 @@ import { routinenLaden, routinenZahl, type Routine } from '$lib/routinen';
 	<div class="unter" style="padding:0 0 6px">{routinenZahl(routinen)}</div>
 	<div class="zeilen">
 		{#each routinen as r (r.name)}
-			<div class="zeile-liste breit">
+			<div class="zeile-liste breit routine">
 				<div class="spalte">
 					<span class="text">{r.name}</span>
 					<span class="leise">
@@ -164,9 +164,17 @@ import { routinenLaden, routinenZahl, type Routine } from '$lib/routinen';
 		color: var(--ink3);
 		line-height: 1.42;
 		display: -webkit-box;
+		line-clamp: 2;
 		-webkit-line-clamp: 2;
 		-webkit-box-orient: vertical;
 		overflow: hidden;
+	}
+
+	/* Zeitplan, naechster und letzter Lauf brauchen auf schmalen Geraeten drei
+	   Zeilen. Sonst faellt genau die Angabe weg, die man dort sucht. */
+	.zeile-liste.routine .leise {
+		line-clamp: 3;
+		-webkit-line-clamp: 3;
 	}
 
 	.rechts {
