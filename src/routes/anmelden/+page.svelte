@@ -20,10 +20,10 @@
 	<div class="kreis-initialen">{marke.slice(0, 2).toUpperCase()}</div>
 </header>
 
-<section class="gruss">
-	<div class="g1">Anmeldung</div>
-	<div class="g2">Zugang zu {marke}.</div>
-</section>
+<h1 class="gruss">
+	<span class="g1">Anmeldung</span>
+	<span class="g2">Zugang zu {marke}.</span>
+</h1>
 
 <div class="held">
 	<Figur rolle="manatee" groesse={120} />
@@ -38,6 +38,7 @@
 		<div class="eingabe-feld">
 			<Icon name="schloss" groesse={20} />
 			<input
+				aria-label="Zugangstoken"
 				type="password"
 				name="token"
 				placeholder="Token"

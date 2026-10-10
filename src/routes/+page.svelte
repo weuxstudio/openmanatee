@@ -40,10 +40,10 @@
 	</button>
 </header>
 
-<section class="gruss">
-	<div class="g1">Guten Morgen,</div>
-	<div class="g2">Lass uns was<br />bewegen.</div>
-</section>
+<h1 class="gruss">
+	<span class="g1">Guten Morgen,</span>
+	<span class="g2">Lass uns was<br />bewegen.</span>
+</h1>
 
 <div class="blase" style="margin-top:14px">
 	<span>Hey! Was packen wir heute an?</span>
@@ -90,7 +90,12 @@
 <div class="eingabe">
 	<div class="eingabe-feld">
 		<Icon name="plus" groesse={20} />
-		<input placeholder="Frag {marke} alles ..." bind:value={frage} onkeydown={(e) => e.key === 'Enter' && senden()} />
+		<input
+			aria-label="Frage an {marke}"
+			placeholder="Frag {marke} alles ..."
+			bind:value={frage}
+			onkeydown={(e) => e.key === 'Enter' && senden()}
+		/>
 		<button aria-label="Sprechen"><Icon name="mikro" groesse={20} /></button>
 	</div>
 	{#if sitzung.anmeldungNoetig}
@@ -114,7 +119,7 @@
 		width: 100%;
 		background: var(--card);
 		border-radius: var(--r-karte);
-		padding: 13px 15px;
+		padding: 14px 15px;
 		box-shadow: var(--schatten);
 		margin: 4px 0 2px;
 	}

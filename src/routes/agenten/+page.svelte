@@ -46,7 +46,7 @@
 </script>
 
 <header class="kopf">
-	<div class="titel">Agenten</div>
+	<h1 class="titel">Agenten</h1>
 	<button class="rund" aria-label="Agent anlegen"><Icon name="plus" groesse={19} /></button>
 </header>
 <div class="unter">{sitzung.echt ? 'Deine Riege, bereit für Aufträge.' : 'Dein Team für jedes Ziel.'}</div>
@@ -70,7 +70,7 @@
 </button>
 
 {#if sitzung.echt}
-	<div class="abschnitt">Experten</div>
+	<h2 class="abschnitt">Experten</h2>
 
 	{#if experten.length}
 		<div class="raster">
@@ -96,7 +96,7 @@
 		</div>
 	{/if}
 {:else}
-	<div class="abschnitt">Deine Agenten</div>
+	<h2 class="abschnitt">Deine Agenten</h2>
 
 	<div class="raster">
 		{#each muster as r (r.k)}

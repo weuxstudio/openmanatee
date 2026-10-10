@@ -62,10 +62,10 @@
 	<button class="rund" aria-label="Zurück" onclick={() => goto('/')}>
 		<Icon name="zurueck" groesse={19} />
 	</button>
-	<div class="mitte">
+	<h1 class="mitte">
 		<span class="name"><i></i>{istHaupt ? marke : daten.name}</span>
 		<span class="sub">{daten.zustand === 'immer da' ? 'immer auf deiner Seite' : daten.zustand}</span>
-	</div>
+	</h1>
 	<button class="rund" aria-label="Mehr"><Icon name="mehr" groesse={19} /></button>
 </header>
 
@@ -120,7 +120,7 @@
 {/if}
 
 {#if sitzung.geaenderteDateien.length && sitzung.schritte.length}
-	<div class="abschnitt">Dateien</div>
+	<h2 class="abschnitt">Dateien</h2>
 	<div class="zeilen">
 		{#each sitzung.geaenderteDateien as d (d.pfad)}
 			<div class="zeile-liste">
@@ -157,7 +157,12 @@
 <div class="eingabe">
 	<div class="eingabe-feld">
 		<Icon name="plus" groesse={20} />
-		<input placeholder="Frag {marke} alles ..." bind:value={frage} onkeydown={(e) => e.key === 'Enter' && senden()} />
+		<input
+			aria-label="Frage an {marke}"
+			placeholder="Frag {marke} alles ..."
+			bind:value={frage}
+			onkeydown={(e) => e.key === 'Enter' && senden()}
+		/>
 		<button aria-label="Sprechen"><Icon name="mikro" groesse={20} /></button>
 	</div>
 	{#if sitzung.hinweis}

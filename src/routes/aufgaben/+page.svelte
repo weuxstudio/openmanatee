@@ -31,7 +31,7 @@
 </script>
 
 <header class="kopf">
-	<div class="titel">Aufgaben</div>
+	<h1 class="titel">Aufgaben</h1>
 	<button class="rund" aria-label="Aufgabe anlegen"><Icon name="plus" groesse={19} /></button>
 </header>
 <div class="unter">
@@ -90,7 +90,7 @@
 	</div>
 {/if}
 
-<div class="abschnitt">Routinen</div>
+<h2 class="abschnitt">Routinen</h2>
 
 <div class="zeilen">
 	{#each routinen as r (r.name)}

@@ -10,7 +10,7 @@
 </script>
 
 <header class="kopf">
-	<div class="titel">Ablage</div>
+	<h1 class="titel">Ablage</h1>
 	<button class="rund" aria-label="Suchen"><Icon name="lupe" groesse={19} /></button>
 </header>
 <div class="unter">Was der Agent angefasst hat.</div>
