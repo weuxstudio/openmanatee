@@ -16,15 +16,22 @@ export type BoardAufgabe = {
 
 export type Board = {
 	aufgaben: BoardAufgabe[];
+	/** True when the route answered with built-in examples instead of real data. */
+	beispiel: boolean;
 	fehler?: string;
 };
 
 export async function boardLaden(): Promise<Board> {
 	try {
 		const a = await fetch('/api/board');
-		return (await a.json()) as Board;
+		const d = (await a.json()) as Partial<Board>;
+		return {
+			aufgaben: Array.isArray(d.aufgaben) ? d.aufgaben : [],
+			beispiel: d.beispiel === true,
+			fehler: d.fehler
+		};
 	} catch (e) {
-		return { aufgaben: [], fehler: (e as Error).message };
+		return { aufgaben: [], beispiel: false, fehler: (e as Error).message };
 	}
 }
 

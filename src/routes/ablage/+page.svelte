@@ -1,4 +1,5 @@
 <script lang="ts">
+	import Hinweis from '$lib/Hinweis.svelte';
 	import Icon from '$lib/Icon.svelte';
 
 	const dateien = [
@@ -13,6 +14,8 @@
 	<button class="rund" aria-label="Suchen"><Icon name="lupe" groesse={19} /></button>
 </header>
 <div class="unter">Was der Agent angefasst hat.</div>
+
+<Hinweis text="Beispielinhalt. Diese Seite hängt noch nicht an einem echten Ordner." />
 
 <div class="zeilen">
 	{#each dateien as d (d.pfad)}

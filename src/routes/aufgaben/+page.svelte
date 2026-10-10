@@ -1,15 +1,18 @@
 <script lang="ts">
 	import Icon from '$lib/Icon.svelte';
+	import Hinweis from '$lib/Hinweis.svelte';
 	import { sitzung } from '$lib/sitzung.svelte';
 	import { boardLaden, ZUSTAND_TEXT, type BoardAufgabe } from '$lib/board';
 
 	let aufgaben = $state<BoardAufgabe[]>([]);
+	let beispiel = $state(false);
 	let fehler = $state<string | null>(null);
 	let geladen = $state(false);
 
 	async function laden(): Promise<void> {
 		const b = await boardLaden();
 		aufgaben = b.aufgaben ?? [];
+		beispiel = b.beispiel;
 		fehler = b.fehler ?? null;
 		geladen = true;
 	}
@@ -34,6 +37,15 @@
 <div class="unter">
 	{sitzung.echt ? 'Was die Experten gerade tun.' : 'Was heute läuft und was wartet.'}
 </div>
+
+{#if beispiel || !sitzung.echt}
+	<Hinweis
+		text="Beispieldaten. Die Aufgaben kommen gerade nicht von deinem Harness."
+		klein={fehler ?? ''}
+	/>
+{:else if fehler}
+	<Hinweis text="Board nicht lesbar." klein={fehler} />
+{/if}
 
 {#if sitzung.echt}
 	{#if aufgaben.length}
@@ -66,9 +78,6 @@
 			</div>
 		</div>
 	{/if}
-	{#if fehler}
-		<p class="hinweis">Board nicht lesbar: {fehler}</p>
-	{/if}
 {:else}
 	<div class="zeilen">
 		{#each sitzung.aufgaben as a (a.nr)}
@@ -96,7 +105,7 @@
 </div>
 
 {#if !sitzung.echt}
-	<p class="hinweis">Musterdaten. Routinen kommen später über <span class="mono">/api/jobs</span>.</p>
+	<p class="hinweis">Routinen sind noch nicht angeschlossen. Das sind Beispiele.</p>
 {/if}
 
 <style>

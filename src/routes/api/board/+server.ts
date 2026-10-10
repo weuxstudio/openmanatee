@@ -53,12 +53,15 @@ function zahlZuZeit(wert: unknown): string {
 }
 
 export async function GET() {
+	// `beispiel` marks the origin of the answer for the interface: true means the
+	// built-in examples, false means real data or an error. The other fields stay
+	// untouched so existing callers keep working.
 	// Case 3: no door, so no cookie can ever be issued. Answer built-in
 	// examples without looking for the CLI or starting a process. The real
 	// path below only runs once the door is active and the cookie is valid.
-	if (!tuerAktiv()) return json({ aufgaben: MUSTER_AUFGABEN });
+	if (!tuerAktiv()) return json({ aufgaben: MUSTER_AUFGABEN, beispiel: true });
 	const klinge = klingeFinden();
-	if (!klinge) return json({ aufgaben: [], fehler: NICHT_GEFUNDEN });
+	if (!klinge) return json({ aufgaben: [], fehler: NICHT_GEFUNDEN, beispiel: false });
 	try {
 		const { stdout } = await lauf(klinge, ['kanban', 'list', '--json'], {
 			timeout: 20000,
@@ -77,11 +80,12 @@ export async function GET() {
 			erstellt: zahlZuZeit(t.created_at),
 			eltern: Array.isArray(t.parent_ids) ? (t.parent_ids as string[]).map(text) : []
 		}));
-		return json({ aufgaben });
+		return json({ aufgaben, beispiel: false });
 	} catch (e) {
 		// A missing binary must read as a clear instruction, not as a raw ENOENT.
 		const roh = e as NodeJS.ErrnoException;
-		if (roh?.code === 'ENOENT') return json({ aufgaben: [], fehler: NICHT_GEFUNDEN });
-		return json({ aufgaben: [], fehler: (e as Error).message });
+		if (roh?.code === 'ENOENT')
+			return json({ aufgaben: [], fehler: NICHT_GEFUNDEN, beispiel: false });
+		return json({ aufgaben: [], fehler: (e as Error).message, beispiel: false });
 	}
 }

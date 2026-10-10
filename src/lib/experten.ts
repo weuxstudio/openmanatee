@@ -33,12 +33,23 @@ export function figurFuer(rolle: string): Rolle {
 	return { ...NEUTRAL, name: rolle };
 }
 
-export async function expertenLaden(): Promise<Experte[]> {
+export type ExpertenStand = {
+	experten: Experte[];
+	/** True when the route answered with built-in examples instead of real profiles. */
+	beispiel: boolean;
+	fehler?: string;
+};
+
+export async function expertenLaden(): Promise<ExpertenStand> {
 	try {
 		const a = await fetch('/api/experten');
-		const d = (await a.json()) as { experten?: Experte[] };
-		return d.experten ?? [];
-	} catch {
-		return [];
+		const d = (await a.json()) as Partial<ExpertenStand>;
+		return {
+			experten: Array.isArray(d.experten) ? d.experten : [],
+			beispiel: d.beispiel === true,
+			fehler: d.fehler
+		};
+	} catch (e) {
+		return { experten: [], beispiel: false, fehler: (e as Error).message };
 	}
 }

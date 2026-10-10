@@ -2,6 +2,7 @@
 	import { goto } from '$app/navigation';
 	import { page } from '$app/state';
 	import Figur from '$lib/Figur.svelte';
+	import Hinweis from '$lib/Hinweis.svelte';
 	import Icon from '$lib/Icon.svelte';
 	import { AGENTEN, HAUPT, rollenSchluessel } from '$lib/werte';
 	import { boardLaden } from '$lib/board';
@@ -16,12 +17,17 @@
 		.map(([k, v]) => ({ k, ...v }));
 
 	let experten = $state<Experte[]>([]);
+	let beispiel = $state(false);
+	let fehler = $state<string | null>(null);
 	let arbeitet = $state<Set<string>>(new Set());
 	let geladen = $state(false);
 
 	async function laden(): Promise<void> {
 		const [e, b] = await Promise.all([expertenLaden(), boardLaden()]);
-		experten = e;
+		experten = e.experten;
+		// Both routes feed this page, so an example answer from either one counts.
+		beispiel = e.beispiel || b.beispiel;
+		fehler = e.fehler ?? b.fehler ?? null;
 		const laufend = (b.aufgaben ?? [])
 			.filter((a) => a.zustand === 'running')
 			.map((a) => a.rolle.toLowerCase());
@@ -44,6 +50,15 @@
 	<button class="rund" aria-label="Agent anlegen"><Icon name="plus" groesse={19} /></button>
 </header>
 <div class="unter">{sitzung.echt ? 'Deine Riege, bereit für Aufträge.' : 'Dein Team für jedes Ziel.'}</div>
+
+{#if beispiel || !sitzung.echt}
+	<Hinweis
+		text="Beispieldaten. Die Rollen kommen gerade nicht von deinem Harness."
+		klein={fehler ?? ''}
+	/>
+{:else if fehler}
+	<Hinweis text="Experten nicht lesbar." klein={fehler} />
+{/if}
 
 <button class="karte feature" onclick={() => oeffnen('manatee')}>
 	<Figur rolle="manatee" groesse={72} />

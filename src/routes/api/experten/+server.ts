@@ -28,10 +28,13 @@ function beschreibungLesen(inhalt: string): string {
 }
 
 export async function GET() {
+	// `beispiel` marks the origin of the answer for the interface: true means the
+	// built-in examples, false means real data or an error. The other fields stay
+	// untouched so existing callers keep working.
 	// Case 3: no door, so no cookie can ever be issued. Answer built-in
 	// example profiles without touching ~/.hermes/profiles. The real read
 	// below only runs once the door is active and the cookie is valid.
-	if (!tuerAktiv()) return json({ experten: MUSTER_EXPERTEN });
+	if (!tuerAktiv()) return json({ experten: MUSTER_EXPERTEN, beispiel: true });
 	try {
 		const eintraege = await readdir(ORDNER, { withFileTypes: true });
 		const experten: Profil[] = [];
@@ -46,8 +49,8 @@ export async function GET() {
 			experten.push({ name: e.name, beschreibung });
 		}
 		experten.sort((a, b) => a.name.localeCompare(b.name));
-		return json({ experten });
+		return json({ experten, beispiel: false });
 	} catch (e) {
-		return json({ experten: [], fehler: (e as Error).message });
+		return json({ experten: [], fehler: (e as Error).message, beispiel: false });
 	}
 }
