@@ -87,6 +87,12 @@ On the Hermes side, `~/.hermes/.env` must contain:
 app talks to the harness, the browser only talks to the app. `HERMES_BIN` optionally points at the
 `hermes` command line tool if it is not on `PATH`.
 
+Two folders are read on the host and never written to. `ABLAGE_ORDNER` is the folder the filing page
+lists; if it is empty the page says so instead of guessing a folder. `CRON_ORDNER` holds the job list
+of the harness (`jobs.json`) that the tasks page reads the routines from; if it is empty the app looks
+in `~/.hermes/cron`. The suggestions under a session come from the open cards of the board; with no
+open card they stay neutral.
+
 The key must never go into a `PUBLIC_` variable. Whoever reads it has the full tool set of the
 harness, the terminal included. See [SECURITY.md](SECURITY.md).
 
@@ -101,7 +107,8 @@ cases:
    writes it into `.env` (the old file is kept as `.env.bak`) and prints it exactly once on the
    startup output. The door is active afterwards; the value in `.env` always lets you back in.
 3. **Both empty** - there is nothing to protect. The door stays off, no token is generated and the
-   app answers with sample data everywhere, including `/api/board` and `/api/experten`.
+   app answers with sample data everywhere, including `/api/board`, `/api/experten`,
+   `/api/routinen` and `/api/ablage`.
 
 `APP_SECRET` signs the login cookie. If it is empty, the app generates one and stores it in `.env`
 the same way. The token itself never appears in the cookie.
@@ -119,8 +126,11 @@ The test scripts measure against a real run, not against the source:
     python pruefen_bausteine.py   catalogue against the real model, fallback and foreign content
     python pruefen_board.py       tasks from the Kanban board
     python pruefen_agenten.py     agents from the profiles
+    python pruefen_daten.py       routines from the job list, files from the folder, suggestions
 
 They read the port from `OPENMANATEE_PORT` (default `4390`) and never touch a running dev server.
+With `OPENMANATEE_TOKEN` set, a script logs in first, which is needed when the copy under test has a
+door.
 
 ## Limits
 

@@ -8,6 +8,7 @@
 	import Icon from '$lib/Icon.svelte';
 	import Werkzeugliste from '$lib/Werkzeugliste.svelte';
 	import { sitzung } from '$lib/sitzung.svelte';
+	import { boardLaden } from '$lib/board';
 	import { AGENTEN } from '$lib/werte';
 
 	/** The key of the main role; its visible label is PUBLIC_APP_NAME. */
@@ -22,7 +23,35 @@
 	const daten = $derived(AGENTEN[rolle]);
 	const istHaupt = $derived(rolle === HAUPT);
 
-	const vorschlaege = ['Zeig meinen Kalender', 'Sortiere meine Mails'];
+	// Die Vorschlaege kommen aus dem echten Brett: die ersten zwei offenen Aufgaben.
+	// Ist das Brett leer oder nicht erreichbar, stehen dort neutrale Fragen, die
+	// nichts behaupten.
+	const NEUTRAL = [
+		{ text: 'Was steht heute an?', frage: 'Was steht heute an?' },
+		{ text: 'Was ist offen?', frage: 'Fasse zusammen, was offen ist.' }
+	];
+	let vorschlaege = $state(NEUTRAL);
+	let vorschlaegeGeladen = $state(false);
+
+	function kuerzen(t: string, laenge = 24): string {
+		const kurz = t.trim();
+		return kurz.length > laenge ? `${kurz.slice(0, laenge).trim()}...` : kurz;
+	}
+
+	async function vorschlaegeHolen(): Promise<void> {
+		const b = await boardLaden();
+		const offen = b.aufgaben.filter((a) => a.zustand !== 'done' && a.zustand !== 'archived');
+		if (offen.length)
+			vorschlaege = offen.slice(0, 2).map((a) => ({
+				text: kuerzen(a.titel),
+				frage: `Was ist der Stand bei: ${a.titel}?`
+			}));
+		vorschlaegeGeladen = true;
+	}
+
+	$effect(() => {
+		if (sitzung.geprueft && !sitzung.anmeldungNoetig && !vorschlaegeGeladen) void vorschlaegeHolen();
+	});
 	let frage = $state('');
 	let sekunden = $state(0);
 
@@ -149,8 +178,8 @@
 {/if}
 
 <div class="chips">
-	{#each vorschlaege as v (v)}
-		<button class="chip" onclick={() => (frage = v, senden())}>{v}</button>
+	{#each vorschlaege as v (v.text)}
+		<button class="chip" onclick={() => (frage = v.frage, senden())}>{v.text}</button>
 	{/each}
 </div>
 

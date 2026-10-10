@@ -3,6 +3,7 @@
 	import Hinweis from '$lib/Hinweis.svelte';
 	import { sitzung } from '$lib/sitzung.svelte';
 	import { boardLaden, ZUSTAND_TEXT, type BoardAufgabe } from '$lib/board';
+import { routinenLaden, routinenZahl, type Routine } from '$lib/routinen';
 
 	let aufgaben = $state<BoardAufgabe[]>([]);
 	let beispiel = $state(false);
@@ -23,11 +24,24 @@
 		if (sitzung.echt && !geladen) void laden();
 	});
 
-	const routinen = [
-		{ name: 'Preiswächter Garmin', text: 'täglich 09:00', zustand: 'ruht' },
-		{ name: 'Kleinanzeigen', text: 'alle 30 Minuten', zustand: 'ruht' },
-		{ name: 'Postfach', text: 'alle 5 Minuten', zustand: 'laeuft' }
-	];
+	let routinen = $state<Routine[]>([]);
+	let routinenBeispiel = $state(false);
+	let routinenFehler = $state<string | null>(null);
+	let routinenGeladen = $state(false);
+
+	async function routinenHolen(): Promise<void> {
+		const r = await routinenLaden();
+		routinen = r.routinen;
+		routinenBeispiel = r.beispiel;
+		routinenFehler = r.fehler ?? null;
+		routinenGeladen = true;
+	}
+
+	// Die Routinen kommen aus der Auftragsliste des Harness. Ohne Tuer antwortet die
+	// Route mit Beispielen, damit der erste Besuch einer frischen Kopie etwas zeigt.
+	$effect(() => {
+		if (sitzung.geprueft && !sitzung.anmeldungNoetig && !routinenGeladen) void routinenHolen();
+	});
 </script>
 
 <header class="kopf">
@@ -92,20 +106,42 @@
 
 <h2 class="abschnitt">Routinen</h2>
 
-<div class="zeilen">
-	{#each routinen as r (r.name)}
-		<div class="zeile-liste">
-			<span class="text">{r.name}</span>
-			<span class="neben">{r.text}</span>
-			<span class="zustand" class:ruht={r.zustand === 'ruht'} class:laeuft={r.zustand === 'laeuft'}>
-				<i></i>
-			</span>
-		</div>
-	{/each}
-</div>
+{#if routinenBeispiel}
+	<Hinweis
+		text="Beispieldaten. Die Routinen kommen gerade nicht von deinem Harness."
+		klein={routinenFehler ?? ''}
+	/>
+{:else if routinenFehler}
+	<Hinweis text="Auftragsliste nicht lesbar." klein={routinenFehler} />
+{/if}
 
-{#if !sitzung.echt}
-	<p class="hinweis">Routinen sind noch nicht angeschlossen. Das sind Beispiele.</p>
+{#if routinen.length}
+	<div class="unter" style="padding:0 0 6px">{routinenZahl(routinen)}</div>
+	<div class="zeilen">
+		{#each routinen as r (r.name)}
+			<div class="zeile-liste breit">
+				<div class="spalte">
+					<span class="text">{r.name}</span>
+					<span class="leise">
+						{r.art} · {r.zeitplan}{r.naechster
+							? ` · nächster Lauf ${r.naechster}`
+							: ' · pausiert'}{r.letzter ? ` · letzter Lauf ${r.letzter}` : ''}
+					</span>
+				</div>
+				<div class="rechts">
+					<span class="zustand" class:laeuft={r.zustand === 'laeuft'} class:ruht={r.zustand === 'ruht'}>
+						<i></i>{r.zustand === 'laeuft' ? 'aktiv' : 'pausiert'}
+					</span>
+				</div>
+			</div>
+		{/each}
+	</div>
+{:else if routinenGeladen}
+	<div class="zeilen">
+		<div class="zeile-liste">
+			<span class="text">Noch keine Routine eingerichtet.</span>
+		</div>
+	</div>
 {/if}
 
 <style>

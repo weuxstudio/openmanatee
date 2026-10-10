@@ -9,6 +9,7 @@ import { accessSync, constants } from 'node:fs';
 import { delimiter, join } from 'node:path';
 import { promisify } from 'node:util';
 import { json } from '@sveltejs/kit';
+import { env } from '$env/dynamic/private';
 import { tuerAktiv } from '$lib/server/tuer';
 import { MUSTER_AUFGABEN } from '$lib/server/muster';
 
@@ -24,7 +25,7 @@ const NICHT_GEFUNDEN = 'hermes CLI nicht gefunden. HERMES_BIN setzen.';
  * on PATH is used, the same way a shell would find it.
  */
 function klingeFinden(): string | null {
-	const ausUmgebung = (process.env.HERMES_BIN ?? '').trim();
+	const ausUmgebung = (env.HERMES_BIN ?? '').trim();
 	if (ausUmgebung) return ausUmgebung;
 	for (const ordner of (process.env.PATH ?? '').split(delimiter)) {
 		if (!ordner) continue;

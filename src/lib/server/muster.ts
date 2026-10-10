@@ -101,3 +101,75 @@ export const MUSTER_EXPERTEN: MusterExperte[] = [
 		beschreibung: 'Beispielprofil: verbindet Werkzeuge zu einem Lauf, der ohne dich startet.'
 	}
 ];
+
+export type MusterRoutine = {
+	name: string;
+	zeitplan: string;
+	zustand: 'laeuft' | 'ruht';
+	naechster: string;
+	letzter: string;
+	art: string;
+};
+
+/**
+ * Three example routines, one of them paused, so the routines section shows both
+ * states at once. The shape matches what the cron list of the harness produces.
+ */
+export const MUSTER_ROUTINEN: MusterRoutine[] = [
+	{
+		name: 'Beispiel: Postfach durchsehen',
+		zeitplan: 'alle 5 Minuten',
+		zustand: 'laeuft',
+		naechster: '01.01. 09:05',
+		letzter: '01.01. 09:00 ok',
+		art: 'Agent'
+	},
+	{
+		name: 'Beispiel: Preiswaechter',
+		zeitplan: 'taeglich 09:00',
+		zustand: 'laeuft',
+		naechster: '02.01. 09:00',
+		letzter: '01.01. 09:00 ok',
+		art: 'Skript'
+	},
+	{
+		name: 'Beispiel: Wochenbericht',
+		zeitplan: 'montags 10:00',
+		zustand: 'ruht',
+		naechster: '',
+		letzter: '29.12. 10:00 Fehler',
+		art: 'Agent'
+	}
+];
+
+export type MusterDatei = {
+	name: string;
+	ordner: boolean;
+	groesse: string;
+	geaendert: string;
+};
+
+/**
+ * Three example files, so the filing page shows a filled list on a fresh copy.
+ * The shape matches what the ablage route reads from a real folder.
+ */
+export const MUSTER_ABLAGE: MusterDatei[] = [
+	{
+		name: 'beispiel-kurzfassung.md',
+		ordner: false,
+		groesse: '2,1 KB',
+		geaendert: '01.01. 09:12'
+	},
+	{
+		name: 'beispiel-bericht.md',
+		ordner: false,
+		groesse: '8,3 KB',
+		geaendert: '01.01. 09:40'
+	},
+	{
+		name: 'beispiel-entwuerfe',
+		ordner: true,
+		groesse: '',
+		geaendert: '01.01. 10:05'
+	}
+];

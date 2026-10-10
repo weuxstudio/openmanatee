@@ -47,8 +47,8 @@ die Sitzung verstrichene Zeit, Zahl der Schritte und einen unbestimmten Balken.
     src/lib/Freigabe.svelte     Freigabekarte mit drei Entscheidungen
     src/routes/session/[id]/    Sitzung mit Lauf, Bausteinen und Freigabe
     src/routes/agenten/         Rollen
-    src/routes/aufgaben/        Aufgaben vom Kanban
-    src/routes/ablage/          Dateien
+    src/routes/aufgaben/        Aufgaben vom Kanban und Routinen aus der Auftragsliste
+    src/routes/ablage/          Dateien aus dem Ordner in ABLAGE_ORDNER
     src/routes/api/...          Schleuse zum Harness, hier liegt der Schluessel
 
 ## Baustein schicken
@@ -71,6 +71,7 @@ Die Pruefskripte messen am echten Lauf im Browser, nicht am geschriebenen Code:
     python pruefen_bausteine.py   Katalog am echten Modell, samt Rueckfall und Fremdinhalt
     python pruefen_board.py       Aufgaben vom Kanban
     python pruefen_agenten.py     Agenten aus den Profilen
+    python pruefen_daten.py       Routinen aus der Auftragsliste, Dateien aus dem Ordner, Vorschlaege
 
 ## Starten
 
@@ -99,6 +100,11 @@ Zugriff auf die Werkzeuge des Harness, das Terminal eingeschlossen.
 Ohne Schluessel laeuft dieselbe Oberflaeche mit Musterdaten, damit alles bedienbar und pruefbar
 bleibt.
 
+Zwei Ordner werden gelesen und nie geschrieben. `ABLAGE_ORDNER` ist der Ordner, den die
+Ablageseite auflistet; bleibt er leer, sagt die Seite das, statt einen Ordner zu raten.
+`CRON_ORDNER` enthaelt die Auftragsliste des Harness (`jobs.json`), aus der die Aufgabenseite die
+Routinen liest; bleibt er leer, schaut die App in `~/.hermes/cron`.
+
     pnpm build          # adapter-node, Ergebnis in build/
     pnpm start          # node --env-file=.env build/index.js, liest .env selbst
     node build/index.js # ohne .env-Datei; Werte ueber die Umgebung setzen
@@ -107,9 +113,13 @@ bleibt.
 
 Echt: der Chat gegen das Harness samt Ereignisstrom, Werkzeugzeilen in Klartext mit Verlauf,
 Antwortdarstellung, Bausteinkatalog, Sitzung nach Neuladen aus dem Verlauf, Figuren, Rollen,
-Aufgaben vom Kanban, Agenten aus den Profilen, Freigabekarte mit drei Entscheidungen,
-Zugangstuer mit Token und signiertem Cookie.
+Aufgaben vom Kanban, Agenten aus den Profilen, Routinen aus der Auftragsliste des Harness,
+Ablage aus dem Ordner in `ABLAGE_ORDNER`, Freigabekarte mit drei Entscheidungen, Zugangstuer mit
+Token und signiertem Cookie. Die Vorschlaege unter der Sitzung kommen aus den offenen Aufgaben des
+Bretts; gibt es keine, stehen dort neutrale Fragen.
 
 Offen: Der Harness nimmt keine Dateiuploads ueber diese Schnittstelle, nur Bilder
 inline. Ein Neustart des Gateway setzt einen laufenden Auftrag auf unterbrochen, das gehoert sichtbar
-auf den Schirm. Die Vorschlaege unter der Sitzung sind noch Muster.
+auf den Schirm. Die Ablage zeigt nur die oberste Ebene des eingestellten Ordners und ohne
+`ABLAGE_ORDNER` sagt sie, dass keiner gesetzt ist. Die Routinen zeigen Zeitplan, naechsten und letzten
+Lauf; aendern lassen sie sich hier nicht.
